@@ -1,0 +1,52 @@
+.body {
+    min-height: 100vh;
+    margin: 0;
+    /* body positon will be only static */
+    // position: relative; // - not work
+    // position: absolute; // - not work
+}
+
+@keyframes driving {
+  0% {
+    margin-top: 5px;
+    transform: scaleY(0.95) skew(1deg);
+  }
+  100% {
+    margin-top: 0px;
+  }
+}
+
+.bycicle,
+.car {
+  position: relative;
+  padding-top: 35px;
+  animation: driving 0.7s infinite linear alternate;
+  // animation-name: driving;
+  // animation-duration: 0.7s;
+  // animation-iteration-count: infinite;
+  // animation-timing-function: linear;
+  // animation-direction: alternate;
+}
+
+.sky {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden; //this!!
+}
+.street {
+  height: 42px;
+  background: #3b3b3b;
+  border-radius: 0 0 12px 12px;
+}
+.sky {
+  height: 150px;
+  background: #ededed;
+  border-radius: 12px;
+}
+.road,
+.cloud {
+  position: absolute;
+  height: 1px;
+  border-radius: 1px;
+}

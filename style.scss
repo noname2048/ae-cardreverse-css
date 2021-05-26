@@ -9,11 +9,19 @@ body {
 }
 
 /* absolute를 중앙화하는 방법중 하나, 자신이 중앙에 위치 */
-@mixin absolute-center {
+@mixin absolute-center-center {
   position: absolute;
   margin: auto;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@mixin absolute-none-center {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
   left: 0;
   right: 0;
 }
@@ -25,6 +33,7 @@ body {
   align-items: center;
 }
 
+/* grid 안에서 100% box를 만들고 absolute의 토대가 되는 클래스 */
 .position-wrap {
   width: 100%;
   height: 100%;
@@ -36,14 +45,18 @@ body {
   }
 }
 
+/* .front와 .back의 공통 요소 */
 @mixin front-back {
   width: 300px;
   height: 150px;
   border-radius: 20px;
+  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
 
-  @include absolute-center();
+  @include absolute-center-center();
 
   display: flex;
+
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   overflow: hidden;
 }
@@ -51,7 +64,10 @@ body {
 .front {
   @include front-back();
   background-color: #fff;
-  // background-color: aquamarine;
+  z-index: 1;
+  transform: rotateX(0deg);
+  
+  // https://stackoverflow.com/questions/9604982/backface-visibility-not-working-properly-in-firefox-works-in-safari
 }
 
 .back {
@@ -73,55 +89,59 @@ body {
   height: 42px;
   background-color: #3b3b3b;
   border-radius: 0 0 12px 12px;
+
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-.bycicle {
+.sky {
   position: absolute;
-  display: block;
-  left: 0;
-  right: 0;
-  bottom: 42px;
-  margin-right: auto;
-  margin-left: auto;
-
-  padding-top: 35px;
-  transform-origin: 50% 100%;
-  animation: bike-animation 1.0s infinite linear alternate;
-  // animation-name: bike-animation;
-  // animation-duration: 0.7s;
-  // animation-iteration-count: infinite;
-  // animation-timing-function: linear;
-  // animation-direction: alternate;
-}
-
-.helicopter {
-  position: relative;
-  margin: auto auto;
-  // animation: helicopter-animation 0.7s infinite linear alternate;
-  
-  transform-origin: 50% 50%;
+  width: 100%;
+  height: 100%;
+  background-color: #ededed;
 }
 
 @keyframes bike-animation {
   0% {
     transform: scaleY(0.95) translate(0, 5px);
+
+    backface-visibility: hidden;
   }
   100% {
     transform: translate(0, 2px);
+
+    backface-visibility: hidden;
   }
+}
+
+img.bycicle {
+  @include absolute-none-center();
+  
+  bottom: 42px;
+  animation: bike-animation 0.8s infinite linear alternate;
+  // animation-name: bike-animation;
+  // animation-duration: 0.7s;
+  // animation-iteration-count: infinite;
+  // animation-timing-function: linear;
+  // animation-direction: alternate;
+  backface-visibility: hidden;
 }
 
 @keyframes helicopter-animation {
   0% {
-    margin-top: 2px;
-    transform: scaleY(0.95) rotate(45deg);
+    transform: translate(0, 2px) scaleY(0.95) rotate(3deg);
   }
   100% {
-    margin-top: 0px;
-    transform: rotate(90deg);
+    transform: translate(0, -2px);
   }
 }
 
+img.helicopter {
+  /* img tag */
+  @include absolute-center-center();
+  transform-origin: 50% 50%;
+  animation: helicopter-animation 0.7s infinite linear alternate;
+}
 
 /* 챌린지가 요구하는 제출규격, 400 * 400, absolute */
 .frame {
@@ -129,36 +149,33 @@ body {
   height: 400px;
   background-color: #d74b4b;
 
-  @include absolute-center();
+  @include absolute-center-center();
   @include flex-center();
 }
 
 /* frame 내부의 300px(width) 를 가지는 card */
-.card-detect-hover {
-  @include absolute-center();
+@mixin card {
+  @include absolute-center-center();
 
   width: 300px;
-  height: 300px;
+  height: 150px;
+  border-radius: 12px;
+  // overflow: hidden;
+}
 
-  position: static;
+.card-parent {
+  @include card();
+}
 
-  border-radius: 2px;
-  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
+.card-child {
+  @include card();
 
-  overflow: hidden;
+  transition: 1.5s;
+  transform-style: preserve-3d;
+}
 
-  .card-rotate {
-    width: 100%;
-    height: 100%;
-
-    transition: 1.5s;
-    transform-style: preserve-3d;
-  }
-
-  &:hover .card-rotate {
-    transform: rotateX(180deg);
-  }
-
+.card-parent:hover > .card-child {
+  transform: rotateX(180deg);
 }
 
 @keyframes bottom {
@@ -171,11 +188,11 @@ body {
   #road_#{$i} {
     position: absolute;
     bottom: random(42) + px;
-    right: 0;
+    right: -25px;
     width: random(50) + px;
     border-bottom: random(2) + px solid #dbdbdb;
 
-    transition: 3s;
+    transition: 2s;
     animation: bottom random(40) * 0.1 + 0.3 + s linear infinite;
   }
 }
@@ -184,43 +201,11 @@ body {
   #cloud_#{$i} {
     position: absolute;
     bottom: random(150) + px;
-    right: 0;
+    right: -25px;
     width: random(50) + px;
     border-bottom: random(2) + px solid #dbdbdb;
 
-    transition: 3s;
-    animation: bottom random(40) * 0.1 + 0.3 + s linear infinite;
+    transition: 2s;
+    animation: bottom (random(20) + random(20)) * 0.1 + 0.3 + s linear infinite;
   }
 }
-
-// .street {
-//   height: 42px;
-//   background-color: #3b3b3b;
-//   border-radius: 0 0 12px 12px;
-// }
-
-
-
-
-// .sky {
-//   // position: absolute;
-//   bottom: 0;
-//   width: 100%;
-//   overflow: hidden; //this!!
-// }
-// .street {
-//   height: 42px;
-//   background: #3b3b3b;
-//   border-radius: 0 0 12px 12px;
-// }
-// .sky {
-//   height: 150px;
-//   background: #ededed;
-//   border-radius: 12px;
-// }
-// .road,
-// .cloud {
-//   position: absolute;
-//   height: 1px;
-//   border-radius: 1px;
-// }

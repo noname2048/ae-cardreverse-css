@@ -14,3 +14,12 @@ for (let i = 1; i <= 15; i++) {
     newDiv.id = `cloud_${i}`
     sky.appendChild(newDiv);
 }
+
+const newFront = document.querySelector('.front').cloneNode(true);
+const newBack = document.querySelector('.back').cloneNode(true);
+newBack.classList.remove("show");
+
+const cardChild = document.querySelector('.card-child');
+
+cardChild.appendChild(newFront);
+cardChild.appendChild(newBack);

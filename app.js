@@ -12,4 +12,5 @@ for (let i = 1; i <= 15; i++) {
     const newDiv = document.createElement("div");
     newDiv.className = `cloud`
     newDiv.id = `cloud_${i}`
+    sky.appendChild(newDiv);
 }

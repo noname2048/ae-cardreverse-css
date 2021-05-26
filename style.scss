@@ -1,52 +1,226 @@
-.body {
-    min-height: 100vh;
-    margin: 0;
-    /* body positon will be only static */
-    // position: relative; // - not work
-    // position: absolute; // - not work
+body {
+  min-height: 100vh;
+  margin: 0;
+  background-color: gray;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 200px auto;
 }
 
-@keyframes driving {
-  0% {
-    margin-top: 5px;
-    transform: scaleY(0.95) skew(1deg);
-  }
-  100% {
-    margin-top: 0px;
-  }
+/* absolute를 중앙화하는 방법중 하나, 자신이 중앙에 위치 */
+@mixin absolute-center {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.bycicle,
-.car {
+/* 기본적인 flex-center method, 자식이 중앙에 위치 */
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.position-wrap {
+  width: 100%;
+  height: 100%;
   position: relative;
+
+  &:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+}
+
+@mixin front-back {
+  width: 300px;
+  height: 150px;
+  border-radius: 20px;
+
+  @include absolute-center();
+
+  display: flex;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.front {
+  @include front-back();
+  background-color: #fff;
+  // background-color: aquamarine;
+}
+
+.back {
+  @include front-back();
+  background-color: #ededed;
+  transform: rotateX(180deg);
+
+  &.show {
+    transform: none;
+  }
+}
+
+.street {
+  position: absolute;
+  overflow: hidden;
+  bottom: 0;
+
+  width: 100%;
+  height: 42px;
+  background-color: #3b3b3b;
+  border-radius: 0 0 12px 12px;
+}
+
+.bycicle {
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0;
+  bottom: 42px;
+  margin-right: auto;
+  margin-left: auto;
+
   padding-top: 35px;
-  animation: driving 0.7s infinite linear alternate;
-  // animation-name: driving;
+  transform-origin: 50% 100%;
+  animation: bike-animation 1.0s infinite linear alternate;
+  // animation-name: bike-animation;
   // animation-duration: 0.7s;
   // animation-iteration-count: infinite;
   // animation-timing-function: linear;
   // animation-direction: alternate;
 }
 
-.sky {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  overflow: hidden; //this!!
+.helicopter {
+  position: relative;
+  margin: auto auto;
+  // animation: helicopter-animation 0.7s infinite linear alternate;
+  
+  transform-origin: 50% 50%;
 }
-.street {
-  height: 42px;
-  background: #3b3b3b;
-  border-radius: 0 0 12px 12px;
+
+@keyframes bike-animation {
+  0% {
+    transform: scaleY(0.95) translate(0, 5px);
+  }
+  100% {
+    transform: translate(0, 2px);
+  }
 }
-.sky {
-  height: 150px;
-  background: #ededed;
-  border-radius: 12px;
+
+@keyframes helicopter-animation {
+  0% {
+    margin-top: 2px;
+    transform: scaleY(0.95) rotate(45deg);
+  }
+  100% {
+    margin-top: 0px;
+    transform: rotate(90deg);
+  }
 }
-.road,
-.cloud {
-  position: absolute;
-  height: 1px;
-  border-radius: 1px;
+
+
+/* 챌린지가 요구하는 제출규격, 400 * 400, absolute */
+.frame {
+  width: 400px;
+  height: 400px;
+  background-color: #d74b4b;
+
+  @include absolute-center();
+  @include flex-center();
 }
+
+/* frame 내부의 300px(width) 를 가지는 card */
+.card-detect-hover {
+  @include absolute-center();
+
+  width: 300px;
+  height: 300px;
+
+  position: static;
+
+  border-radius: 2px;
+  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
+
+  overflow: hidden;
+
+  .card-rotate {
+    width: 100%;
+    height: 100%;
+
+    transition: 1.5s;
+    transform-style: preserve-3d;
+  }
+
+  &:hover .card-rotate {
+    transform: rotateX(180deg);
+  }
+
+}
+
+@keyframes bottom {
+  100% {
+    right: 300px;
+  }
+}
+
+@for $i from 1 to 15 {
+  #road_#{$i} {
+    position: absolute;
+    bottom: random(42) + px;
+    right: 0;
+    width: random(50) + px;
+    border-bottom: random(2) + px solid #dbdbdb;
+
+    transition: 3s;
+    animation: bottom random(40) * 0.1 + 0.3 + s linear infinite;
+  }
+}
+
+@for $i from 1 to 15 {
+  #cloud_#{$i} {
+    position: absolute;
+    bottom: random(150) + px;
+    right: 0;
+    width: random(50) + px;
+    border-bottom: random(2) + px solid #dbdbdb;
+
+    transition: 3s;
+    animation: bottom random(40) * 0.1 + 0.3 + s linear infinite;
+  }
+}
+
+// .street {
+//   height: 42px;
+//   background-color: #3b3b3b;
+//   border-radius: 0 0 12px 12px;
+// }
+
+
+
+
+// .sky {
+//   // position: absolute;
+//   bottom: 0;
+//   width: 100%;
+//   overflow: hidden; //this!!
+// }
+// .street {
+//   height: 42px;
+//   background: #3b3b3b;
+//   border-radius: 0 0 12px 12px;
+// }
+// .sky {
+//   height: 150px;
+//   background: #ededed;
+//   border-radius: 12px;
+// }
+// .road,
+// .cloud {
+//   position: absolute;
+//   height: 1px;
+//   border-radius: 1px;
+// }

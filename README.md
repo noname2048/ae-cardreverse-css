@@ -1,6 +1,6 @@
 # ad-cardreverse-css
 
-연습용 레포
+![](presentation/Peek%202021-05-27%2000-26.gif)
 
 ## 출처
 
